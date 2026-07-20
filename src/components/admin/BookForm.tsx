@@ -15,6 +15,8 @@ type BookValues = {
   stockQty: number;
   inStock: boolean;
   isActive: boolean;
+  featured: boolean;
+  featuredRank: number;
   coverUrl: string | null;
   categoryId: string;
   publisherId: string;
@@ -87,7 +89,7 @@ export function BookForm({
 
       <CoverUploader defaultUrl={book?.coverUrl} />
 
-      <div className="flex gap-6">
+      <div className="flex flex-wrap items-center gap-6">
         <label className="flex items-center gap-2 text-sm">
           <input type="checkbox" name="inStock" defaultChecked={book ? book.inStock : true} className="size-4 accent-primary" />
           In stock
@@ -96,6 +98,21 @@ export function BookForm({
           <input type="checkbox" name="isActive" defaultChecked={book ? book.isActive : true} className="size-4 accent-primary" />
           Active (visible in store)
         </label>
+        <label className="flex items-center gap-2 text-sm">
+          <input type="checkbox" name="featured" defaultChecked={book ? book.featured : false} className="size-4 accent-primary" />
+          Featured (pin to top)
+        </label>
+        <div className="flex items-center gap-2 text-sm">
+          <Label htmlFor="featuredRank" className="text-muted-foreground">Featured priority</Label>
+          <Input
+            id="featuredRank"
+            name="featuredRank"
+            type="number"
+            min={0}
+            defaultValue={book?.featuredRank ?? 0}
+            className="h-8 w-20"
+          />
+        </div>
       </div>
 
       <div>

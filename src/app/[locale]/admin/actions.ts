@@ -25,9 +25,8 @@ const bookSchema = z.object({
   categoryId: z.string().min(1),
   publisherId: z.string().min(1),
   stockQty: z.coerce.number().int().min(0).max(100000),
+  featuredRank: z.coerce.number().int().min(0).max(9999),
   coverUrl: z.string().trim().url().optional().or(z.literal("")),
-  inStock: z.coerce.boolean().optional(),
-  isActive: z.coerce.boolean().optional(),
 });
 
 function parseCheckbox(v: FormDataEntryValue | null): boolean {
@@ -44,10 +43,12 @@ export async function upsertBook(locale: string, id: string | null, formData: Fo
     categoryId: formData.get("categoryId"),
     publisherId: formData.get("publisherId"),
     stockQty: formData.get("stockQty"),
+    featuredRank: formData.get("featuredRank") ?? 0,
     coverUrl: formData.get("coverUrl") ?? "",
   });
   const inStock = parseCheckbox(formData.get("inStock"));
   const isActive = parseCheckbox(formData.get("isActive"));
+  const featured = parseCheckbox(formData.get("featured"));
 
   const data = {
     titleEn: parsed.titleEn,
@@ -59,6 +60,8 @@ export async function upsertBook(locale: string, id: string | null, formData: Fo
     coverUrl: parsed.coverUrl || null,
     inStock,
     isActive,
+    featured,
+    featuredRank: parsed.featuredRank,
     categoryId: parsed.categoryId,
     publisherId: parsed.publisherId,
   };

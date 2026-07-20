@@ -30,7 +30,10 @@ function buildWhere(q: BookQuery): Prisma.BookWhereInput {
   return { AND };
 }
 
-function buildOrderBy(q: BookQuery, locale: Locale): Prisma.BookOrderByWithRelationInput {
+function buildOrderBy(
+  q: BookQuery,
+  locale: Locale,
+): Prisma.BookOrderByWithRelationInput | Prisma.BookOrderByWithRelationInput[] {
   switch (q.sort) {
     case "price_asc":
       return { price: "asc" };
@@ -39,7 +42,8 @@ function buildOrderBy(q: BookQuery, locale: Locale): Prisma.BookOrderByWithRelat
     case "title":
       return locale === "mr" ? { titleMr: "asc" } : { titleEn: "asc" };
     default:
-      return { createdAt: "desc" };
+      // Default view: featured books first, then newest.
+      return [{ featured: "desc" }, { featuredRank: "desc" }, { createdAt: "desc" }];
   }
 }
 
@@ -84,6 +88,15 @@ export function getNewArrivals(take = 8) {
     where: { isActive: true },
     take,
     orderBy: { createdAt: "desc" },
+    include: { category: true, publisher: true },
+  });
+}
+
+export function getFeaturedBooks(take = 10) {
+  return prisma.book.findMany({
+    where: { isActive: true, featured: true },
+    take,
+    orderBy: [{ featuredRank: "desc" }, { createdAt: "desc" }],
     include: { category: true, publisher: true },
   });
 }

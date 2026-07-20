@@ -23,6 +23,8 @@ model Book {
   inStock     Boolean  @default(true)
   stockQty    Int      @default(5)
   isActive    Boolean  @default(true)
+  featured    Boolean  @default(false) // pin to the top of home & catalog
+  featuredRank Int     @default(0) // higher shows first among featured
   publisherId String
   categoryId  String
   publisher   Publisher @relation(fields: [publisherId], references: [id])
@@ -34,6 +36,7 @@ model Book {
   @@index([publisherId])
   @@index([price])
   @@index([createdAt])
+  @@index([featured, featuredRank])
 }
 
 model Category {

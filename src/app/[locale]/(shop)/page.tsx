@@ -8,7 +8,7 @@ import { OrganizationJsonLd, WebSiteJsonLd } from "@/components/seo/JsonLd";
 import { Button } from "@/components/ui/button";
 import { SearchBar } from "@/components/books/SearchBar";
 import { BookGrid } from "@/components/books/BookGrid";
-import { getCategoriesWithCounts, getNewArrivals } from "@/lib/books";
+import { getCategoriesWithCounts, getNewArrivals, getFeaturedBooks } from "@/lib/books";
 
 export async function generateMetadata({
   params,
@@ -35,9 +35,10 @@ export default async function HomePage({
   const loc = locale as Locale;
   const t = await getTranslations();
 
-  const [categories, newArrivals] = await Promise.all([
+  const [categories, newArrivals, featured] = await Promise.all([
     getCategoriesWithCounts(),
     getNewArrivals(10),
+    getFeaturedBooks(10),
   ]);
 
   const topCategories = categories
@@ -67,6 +68,16 @@ export default async function HomePage({
           </Button>
         </div>
       </section>
+
+      {/* Featured (only when the client has pinned some) */}
+      {featured.length > 0 && (
+        <section className="py-6">
+          <div className="mb-5 flex items-center justify-between">
+            <h2 className="text-xl font-semibold">{t("home.featured")}</h2>
+          </div>
+          <BookGrid books={featured} locale={loc} />
+        </section>
+      )}
 
       {/* Categories */}
       <section className="py-6">
