@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -7,11 +8,33 @@ import type { Locale } from "@/i18n/routing";
 import { getBookBySlug, getRelatedBooks } from "@/lib/books";
 import { siteConfig } from "@/lib/site-config";
 import { formatInr } from "@/lib/utils";
+import { buildMetadata } from "@/lib/seo/metadata";
+import { buildProductJsonLd } from "@/lib/seo/product-jsonld";
 import { PlaceholderCover } from "@/components/book/PlaceholderCover";
+import { ProductJsonLd } from "@/components/seo/JsonLd";
 import { Price } from "@/components/common/Price";
 import { Badge } from "@/components/ui/badge";
 import { AddToCartButton } from "@/components/cart/AddToCartButton";
 import { BookGrid } from "@/components/books/BookGrid";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}): Promise<Metadata> {
+  const { locale, slug } = await params;
+  const loc = locale as Locale;
+  const book = await getBookBySlug(slug);
+  if (!book) return { title: "Not found", robots: { index: false } };
+  const name = loc === "mr" ? book.titleMr : book.titleEn;
+  const title = book.author ? `${name} — ${book.author}` : name;
+  const description =
+    loc === "mr"
+      ? `${book.titleMr} — ${book.author ?? ""} · ${book.publisher.name}. मराठी पुस्तक ऑनलाइन खरेदी करा.`
+      : `${book.titleEn} by ${book.author ?? "Unknown"} · ${book.publisher.name}. Buy this Marathi book online.`;
+  const image = book.coverUrl ?? `${siteConfig.baseUrl}/api/og/book/${slug}`;
+  return buildMetadata({ locale: loc, path: `/books/${slug}`, title, description, images: [image] });
+}
 
 export default async function BookPage({
   params,
@@ -34,6 +57,7 @@ export default async function BookPage({
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6">
+      <ProductJsonLd data={buildProductJsonLd(book, loc)} />
       <Link
         href="/books"
         className="mb-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"

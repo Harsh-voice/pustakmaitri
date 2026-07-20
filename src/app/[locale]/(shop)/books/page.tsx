@@ -1,5 +1,7 @@
+import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/i18n/routing";
+import { buildMetadata } from "@/lib/seo/metadata";
 import { parseBookQuery } from "@/lib/search-params";
 import {
   getBooks,
@@ -14,6 +16,21 @@ import {
   MobileFilters,
   type FilterOption,
 } from "@/components/books/Filters";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "meta" });
+  return buildMetadata({
+    locale: locale as Locale,
+    path: "/books",
+    title: t("booksTitle"),
+    description: t("booksDescription"),
+  });
+}
 
 export default async function BooksPage({
   params,

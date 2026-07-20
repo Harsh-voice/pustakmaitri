@@ -1,11 +1,29 @@
+import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ArrowRight } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
+import { buildMetadata } from "@/lib/seo/metadata";
+import { OrganizationJsonLd, WebSiteJsonLd } from "@/components/seo/JsonLd";
 import { Button } from "@/components/ui/button";
 import { SearchBar } from "@/components/books/SearchBar";
 import { BookGrid } from "@/components/books/BookGrid";
 import { getCategoriesWithCounts, getNewArrivals } from "@/lib/books";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "meta" });
+  return buildMetadata({
+    locale: locale as Locale,
+    path: "/",
+    title: t("homeTitle"),
+    description: t("homeDescription"),
+  });
+}
 
 export default async function HomePage({
   params,
@@ -29,6 +47,8 @@ export default async function HomePage({
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 sm:px-6">
+      <OrganizationJsonLd />
+      <WebSiteJsonLd locale={loc} />
       {/* Hero */}
       <section className="flex flex-col items-start gap-5 py-12 md:py-20">
         <h1 className="devanagari max-w-2xl text-3xl font-bold leading-tight tracking-tight sm:text-4xl md:text-5xl">
