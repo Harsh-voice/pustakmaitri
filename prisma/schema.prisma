@@ -1,0 +1,100 @@
+// Pustak Maitri — data model.
+// Prisma 7: the `prisma-client` generator emits a TS client to src/generated,
+// and the app connects through the @prisma/adapter-pg driver adapter.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Book {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  titleEn     String
+  titleMr     String
+  author      String?
+  mrp         Int // in rupees
+  price       Int // selling price (default = mrp)
+  coverUrl    String? // null -> placeholder cover
+  inStock     Boolean  @default(true)
+  stockQty    Int      @default(5)
+  isActive    Boolean  @default(true)
+  publisherId String
+  categoryId  String
+  publisher   Publisher @relation(fields: [publisherId], references: [id])
+  category    Category  @relation(fields: [categoryId], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([categoryId])
+  @@index([publisherId])
+  @@index([price])
+  @@index([createdAt])
+}
+
+model Category {
+  id     String @id @default(cuid())
+  slug   String @unique
+  nameEn String
+  nameMr String
+  books  Book[]
+}
+
+model Publisher {
+  id    String @id @default(cuid())
+  slug  String @unique
+  name  String @unique
+  books Book[]
+}
+
+model Order {
+  id                String      @id @default(cuid())
+  orderNumber       String      @unique // e.g. PM-20260720-0001
+  status            String      @default("created") // created | paid | failed | shipped
+  amount            Int // total in rupees (items + shipping)
+  currency          String      @default("INR")
+  razorpayOrderId   String?     @unique
+  razorpayPaymentId String?     @unique
+  customerName      String
+  email             String
+  phone             String
+  addressLine1      String
+  addressLine2      String?
+  city              String
+  state             String
+  pincode           String
+  items             OrderItem[]
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+
+  @@index([status, createdAt])
+  @@index([email])
+}
+
+model OrderItem {
+  id            String @id @default(cuid())
+  orderId       String
+  order         Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  bookId        String
+  titleSnapshot String // title at purchase time
+  priceSnapshot Int // price at purchase time
+  qty           Int
+}
+
+// Per-day sequence for human-friendly order numbers (PM-YYYYMMDD-NNNN).
+model OrderCounter {
+  day String @id // "20260720"
+  seq Int    @default(0)
+}
+
+// Idempotency + audit log for Razorpay webhooks (keyed by x-razorpay-event-id).
+model WebhookEvent {
+  id         String   @id
+  type       String
+  payload    Json
+  receivedAt DateTime @default(now())
+}
