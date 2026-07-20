@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Lock, ShieldCheck } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { z } from "zod";
 import { checkoutSchema } from "@/lib/validation/checkout";
@@ -16,7 +16,6 @@ import { formatInr } from "@/lib/utils";
 import { shippingFor } from "@/config/commerce";
 import { useCart } from "@/store/cart";
 import { useHydratedCart } from "@/components/cart/useHydratedCart";
-import type { Locale } from "@/i18n/routing";
 
 const formSchema = checkoutSchema.omit({ items: true });
 type FormValues = z.infer<typeof formSchema>;
@@ -30,7 +29,6 @@ type Summary = {
 
 export function CheckoutForm() {
   const t = useTranslations();
-  const locale = useLocale() as Locale;
   const router = useRouter();
   const hydrated = useHydratedCart();
   const lines = useCart((s) => s.lines);

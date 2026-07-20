@@ -50,18 +50,24 @@ function requireAdminAuth(req: NextRequest): NextResponse | null {
   return null;
 }
 
-// Matches /admin and /{locale}/admin (and their subpaths).
+// Matches /admin, /{locale}/admin and /api/admin (and their subpaths).
 const ADMIN_RE = /^\/(?:mr\/|en\/)?admin(?:\/|$)/;
 
 export default function proxy(req: NextRequest): NextResponse {
-  if (ADMIN_RE.test(req.nextUrl.pathname)) {
+  const { pathname } = req.nextUrl;
+  const isApiAdmin = pathname.startsWith("/api/admin");
+  if (ADMIN_RE.test(pathname) || isApiAdmin) {
     const denied = requireAdminAuth(req);
     if (denied) return denied;
+    // API admin routes must not be run through locale routing.
+    if (isApiAdmin) return NextResponse.next();
   }
   return intlMiddleware(req);
 }
 
 export const config = {
-  // Skip Next internals, API routes and anything with a file extension.
-  matcher: ["/((?!api|trpc|_next|_vercel|.*\\..*).*)"],
+  // Run on all non-API paths (for locale routing) PLUS /api/admin (for auth).
+  // Other /api/* routes (checkout, webhook, …) are intentionally excluded so
+  // they stay public and un-localized.
+  matcher: ["/((?!api|trpc|_next|_vercel|.*\\..*).*)", "/api/admin/:path*"],
 };

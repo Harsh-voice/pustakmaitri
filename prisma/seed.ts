@@ -128,7 +128,7 @@ function uniquePublisherSlugs(names: string[]): Map<string, string> {
   const map = new Map<string, string>();
   const used = new Set<string>();
   for (const name of names) {
-    let base = slugify(name);
+    const base = slugify(name);
     let slug = base;
     let n = 2;
     while (used.has(slug)) slug = `${base}-${n++}`;

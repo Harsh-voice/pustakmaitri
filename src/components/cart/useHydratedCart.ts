@@ -12,6 +12,9 @@ export function useHydratedCart() {
   const [hydrated, setHydrated] = useState(false);
   useEffect(() => {
     useCart.persist.rehydrate();
+    // Canonical one-shot hydration flag; the cascading-render warning does not
+    // apply to a single post-mount transition.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setHydrated(true);
   }, []);
   return hydrated;

@@ -38,10 +38,7 @@ export function CartView() {
   const ids = useMemo(() => lines.map((l) => l.bookId), [lines]);
 
   useEffect(() => {
-    if (!hydrated || ids.length === 0) {
-      setSummaries({});
-      return;
-    }
+    if (!hydrated || ids.length === 0) return;
     let cancelled = false;
     fetch("/api/cart/summary", {
       method: "POST",

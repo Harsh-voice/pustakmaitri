@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 // Rendered by Next's error boundary; kept independent of the i18n request
 // context (which is not always available here) by showing both languages.
 export default function NotFound() {
@@ -8,12 +10,12 @@ export default function NotFound() {
         <p className="devanagari text-lg">पान सापडले नाही</p>
         <p className="text-muted-foreground">Page not found</p>
       </div>
-      <a
+      <Link
         href="/"
         className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90"
       >
         मुखपृष्ठ / Home
-      </a>
+      </Link>
     </div>
   );
 }
