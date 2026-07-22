@@ -20,7 +20,7 @@ export function Price({
     lg: "text-2xl",
   } as const;
   return (
-    <span className={cn("inline-flex items-baseline gap-2", className)}>
+    <span className={cn("tnum inline-flex items-baseline gap-2", className)}>
       <span className={cn("font-semibold text-foreground", sizes[size])}>
         {formatInr(price)}
       </span>

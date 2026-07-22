@@ -6,7 +6,7 @@ export function LegalDoc({ doc, locale }: { doc: LegalDocType; locale: string })
   return (
     <article className="mx-auto w-full max-w-3xl px-4 py-10 sm:px-6">
       <header className="mb-8 border-b pb-6">
-        <h1 className={`text-3xl font-bold tracking-tight ${dev}`}>{doc.title}</h1>
+        <h1 className={`font-display text-3xl font-semibold sm:text-4xl ${dev}`}>{doc.title}</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           {locale === "mr" ? "शेवटचे अद्यतन" : "Last updated"}: {doc.updated}
         </p>

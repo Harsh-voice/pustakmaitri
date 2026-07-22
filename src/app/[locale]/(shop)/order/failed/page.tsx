@@ -18,7 +18,7 @@ export default async function OrderFailedPage({
   return (
     <div className="mx-auto flex w-full max-w-xl flex-col items-center gap-4 px-4 py-16 text-center sm:px-6">
       <XCircle className="size-12 text-destructive" />
-      <h1 className="text-2xl font-bold">{t("order.failedTitle")}</h1>
+      <h1 className="font-display text-3xl font-semibold">{t("order.failedTitle")}</h1>
       <p className="text-muted-foreground">{t("order.failedMessage")}</p>
       {order && (
         <p className="text-sm text-muted-foreground">

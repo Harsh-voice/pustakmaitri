@@ -4,7 +4,7 @@ import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { siteConfig } from "@/lib/site-config";
-import { inter, devanagari } from "@/lib/fonts";
+import { inter, devanagari, fraunces, serifDevanagari } from "@/lib/fonts";
 import { Toaster } from "@/components/ui/sonner";
 import "../globals.css";
 
@@ -45,7 +45,7 @@ export default async function LocaleLayout({
   return (
     <html
       lang={locale}
-      className={`${inter.variable} ${devanagari.variable} h-full antialiased`}
+      className={`${inter.variable} ${devanagari.variable} ${fraunces.variable} ${serifDevanagari.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">

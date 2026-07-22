@@ -14,7 +14,7 @@ export default async function CheckoutPage({
   return (
     <div className="mx-auto w-full max-w-5xl px-4 py-8 sm:px-6">
       <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="afterInteractive" />
-      <h1 className="mb-6 text-2xl font-bold">{t("title")}</h1>
+      <h1 className="mb-6 font-display text-3xl font-semibold">{t("title")}</h1>
       <CheckoutForm />
     </div>
   );

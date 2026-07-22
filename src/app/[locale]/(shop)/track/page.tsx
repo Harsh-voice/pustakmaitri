@@ -24,7 +24,7 @@ export default async function TrackPage({ params }: Props) {
 
   return (
     <div className="mx-auto w-full max-w-lg px-4 py-12 sm:px-6">
-      <h1 className="text-2xl font-bold">{t("title")}</h1>
+      <h1 className="font-display text-3xl font-semibold">{t("title")}</h1>
       <p className="mb-6 mt-1 text-sm text-muted-foreground">{t("subtitle")}</p>
       <TrackForm />
     </div>

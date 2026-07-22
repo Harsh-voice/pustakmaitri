@@ -7,7 +7,7 @@ import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 import { getBookBySlug, getRelatedBooks } from "@/lib/books";
 import { siteConfig } from "@/lib/site-config";
-import { formatInr } from "@/lib/utils";
+import { formatInr, cn } from "@/lib/utils";
 import { buildMetadata } from "@/lib/seo/metadata";
 import { buildProductJsonLd } from "@/lib/seo/product-jsonld";
 import { PlaceholderCover } from "@/components/book/PlaceholderCover";
@@ -81,7 +81,7 @@ export default async function BookPage({
               />
             </div>
           ) : (
-            <PlaceholderCover title={book.titleMr} author={book.author} seed={book.slug} />
+            <PlaceholderCover title={book.titleMr} author={book.author} seed={book.slug} size="lg" />
           )}
         </div>
 
@@ -95,15 +95,15 @@ export default async function BookPage({
               {categoryName}
             </Link>
             <h1
-              className={
-                loc === "mr"
-                  ? "devanagari mt-1 text-2xl font-bold leading-snug sm:text-3xl"
-                  : "mt-1 text-2xl font-bold leading-snug sm:text-3xl"
-              }
+              className={cn(
+                "font-display mt-2 text-3xl font-semibold leading-[1.15] sm:text-4xl",
+                loc === "mr" && "devanagari",
+              )}
+              style={{ textWrap: "balance" }}
             >
               {primary}
             </h1>
-            <p className="mt-1 text-base text-muted-foreground">{secondary}</p>
+            <p className="mt-1.5 text-base italic text-muted-foreground">{secondary}</p>
           </div>
 
           {book.author && (

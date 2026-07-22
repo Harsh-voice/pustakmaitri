@@ -38,7 +38,7 @@ export default async function OrderSuccessPage({
         ) : (
           <CheckCircle2 className="size-12 text-primary" />
         )}
-        <h1 className="text-2xl font-bold">
+        <h1 className="font-display text-3xl font-semibold">
           {pending ? t("payment.verifying") : t("order.successTitle")}
         </h1>
         <p className="text-muted-foreground">
